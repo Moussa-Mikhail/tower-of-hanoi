@@ -290,26 +290,24 @@ Hanoi_display::Hanoi_display(int input_num_disks)
 
     // Dimensions of various things in units of char
 
-    disk_height = 3;
+    int disk_height = 3;
 
     // Tower must fit num_disks and 1 char for top and 1 char margin.
-    tower_height = num_disks*disk_height + 1 + 1;
+    int tower_height = num_disks*disk_height + 1 + 1;
 
     top_margin = 1;
 
     display_height = top_margin + tower_height;
 
-    max_disk_size = num_disks;
+    int max_disk_size = num_disks;
 
-    max_disk_width = 2*max_disk_size + 3;
+    int max_disk_width = 2*max_disk_size + 3;
 
     side_margin = max_disk_width/2 + 5;
 
     space_between_towers = max_disk_width + 3;
 
     tower_width = 3;
-
-    display_width = 2*side_margin + 2*space_between_towers + 3*tower_width;
 
     // 3 spaces + 1 char (tower side).
     left_tower_pos = side_margin + 1;
@@ -335,7 +333,9 @@ void Hanoi_display::initialize_display()
     ascii_display.resize(display_height);
 
     for (std::string & line: ascii_display)
-    {
+    {   
+        int display_width = 2*side_margin + 2*space_between_towers + 3*tower_width;
+
         line.resize(display_width);
 
         // Ascii display is initially empty.
@@ -386,24 +386,22 @@ void Hanoi_display::add_disk(int tower_pos, int disk_pos, int disk_size)
 {
     if (disk_size > 0)
     {
-        int disk_height = display_height - 1 - (3*disk_pos + 1);
+        int disk_pos_height = display_height - 1 - (3*disk_pos + 1);
 
         int disk_width = 2*disk_size + 3;
 
         for (int i = 0; i < disk_width; i++)
         {
-            ascii_display[disk_height + 1][tower_pos - disk_width/2 + i] = '=';
+            ascii_display[disk_pos_height + 1][tower_pos - disk_width/2 + i] = '=';
 
-            ascii_display[disk_height][tower_pos - disk_width/2 + i] = ' ';
+            ascii_display[disk_pos_height][tower_pos - disk_width/2 + i] = ' ';
 
-            ascii_display[disk_height - 1][tower_pos - disk_width/2 + i] = '=';
+            ascii_display[disk_pos_height - 1][tower_pos - disk_width/2 + i] = '=';
         }
 
-        //ascii_display[disk_height][tower_pos] = disk_size;
+        ascii_display[disk_pos_height][tower_pos - disk_width/2 - 1] = '|';
 
-        ascii_display[disk_height][tower_pos - disk_width/2 - 1] = '|';
-
-        ascii_display[disk_height][tower_pos + disk_width/2 + 1] = '|';
+        ascii_display[disk_pos_height][tower_pos + disk_width/2 + 1] = '|';
     }
 }
 

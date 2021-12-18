@@ -97,25 +97,15 @@ class Hanoi_display
 
         int num_disks;
 
-        int disk_height;
-
-        int tower_height;
-
         int top_margin;
 
         int display_height;
-
-        int max_disk_size;
-
-        int max_disk_width;
 
         int side_margin;
 
         int space_between_towers;
 
         int tower_width;
-
-        int display_width;
 
         int left_tower_pos;
 
