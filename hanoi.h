@@ -13,31 +13,27 @@ enum pos {left = 1, center, right};
 struct Tower
 {
     // Array of ints which represent the size of disks on the tower.
-    int * arr = nullptr;
+    std::vector<int> arr;
     int height;
 
     // Returns reference to top disk on tower.
-    int & top() const; 
+    int & top(); 
 
     // Returns reference to the empty spot above top disk. value of reference should always be 0.
-    int & on_top() const; 
+    int & on_top(); 
 
     // Returns true if tower is empty.
     bool is_empty() const;
 
     // Returns true if tower is full.
     bool is_full(int num_disks) const;
-
-    int & operator[] (int height) const;
 };
 
 class Hanoi
 {
     public:
 
-        Hanoi(int size_1 = 1);
-
-        ~Hanoi();
+        Hanoi(int size_1 = 3);
         
         // move the top disk on stack 1 to the top of stack 2
         void move(pos tower_1_num, pos tower_2_num); 
