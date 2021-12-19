@@ -8,12 +8,12 @@
 
 #include "hanoi.h"
 
-int & Tower::top() const
+int & Tower::top()
 {
-    return arr[height-1];
+    return arr.at(height - 1);
 }
 
-int & Tower::on_top() const
+int & Tower::on_top()
 {
     return arr[height];
 }
@@ -28,11 +28,6 @@ bool Tower::is_full(int num_disks) const
     return height == num_disks;
 }
 
-int & Tower::operator[] (int height) const
-{
-    return this->arr[height];
-}
-
 Hanoi::Hanoi(int num_disks_1)
 {
     if (num_disks_1 < 1)
@@ -42,55 +37,28 @@ Hanoi::Hanoi(int num_disks_1)
 
     num_disks = num_disks_1;
 
-    left_tower.arr = new int[num_disks];
-
-    // Left tower initialization
-    for (int i = 0; i < num_disks; i++)
-    {
-        left_tower.arr[i] = num_disks - i;
-    }
+    left_tower.arr.resize(num_disks);
 
     left_tower.height = num_disks;
 
-    center_tower.arr = new int[num_disks] ();
+    center_tower.arr.resize(num_disks);
 
     center_tower.height = 0;
 
-    right_tower.arr = new int[num_disks] ();
+    right_tower.arr.resize(num_disks);
 
     right_tower.height = 0;
+
+    // Tower initialization
+    for (int i = 0; i < num_disks; i++)
+    {
+        left_tower.arr[i] = num_disks - i;
+
+        center_tower.arr[i] = 0;
+
+        right_tower.arr[i] = 0;
+    }
 }
-
-Hanoi::~Hanoi()
-{
-    delete[] left_tower.arr;
-
-    delete[] center_tower.arr;
-
-    delete[] right_tower.arr;
-}
-
-// Tower Hanoi::get_tower(pos tower_num) const
-// {
-//     Tower tower;
-
-//     switch(tower_num)
-//     {
-//         case left:
-//             tower = left_tower;
-//             break;
-
-//         case center:
-//             tower = center_tower;
-//             break;
-
-//         case right:
-//             tower = right_tower;
-//             break;
-//     }
-
-//     return tower;
-// }
 
 Tower & Hanoi::get_tower(pos tower_num)
 {
@@ -268,7 +236,7 @@ bool Hanoi::is_solved() const
 
     while (is_solved && (i < num_disks))
     {
-        if (right_tower[i] != (num_disks - i))
+        if (right_tower.arr[i] != (num_disks - i))
         {
             is_solved = false;
         }
@@ -374,11 +342,11 @@ void Hanoi_display::add_disks(const Hanoi & game)
 {
     for (int i = 0; i < num_disks; i++)
     {
-        add_disk(left_tower_pos, i, game.left_tower[i]);
+        add_disk(left_tower_pos, i, game.left_tower.arr[i]);
 
-        add_disk(center_tower_pos, i, game.center_tower[i]);
+        add_disk(center_tower_pos, i, game.center_tower.arr[i]);
 
-        add_disk(right_tower_pos, i, game.right_tower[i]);
+        add_disk(right_tower_pos, i, game.right_tower.arr[i]);
     }
 }
 
