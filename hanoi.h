@@ -20,13 +20,15 @@ struct Tower
     int & top(); 
 
     // Returns reference to the empty spot above top disk. value of reference should always be 0.
-    int & on_top(); 
+    int & above_top(); 
 
     // Returns true if tower is empty.
     bool is_empty() const;
 
     // Returns true if tower is full.
     bool is_full(int num_disks) const;
+
+    int operator[](int pos) const;
 };
 
 class Hanoi
