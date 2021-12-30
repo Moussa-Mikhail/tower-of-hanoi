@@ -4,7 +4,7 @@
 
 int main()
 {
-    std::cout << "Welcome to Towers of Hanoi.\n\n";
+    std::cout << "Welcome to Tower of Hanoi.\n\n";
 
     std::cout << "This game involves 3 towers ";
     std::cout << "and 3 disks of different sizes.\n";
