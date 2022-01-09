@@ -8,32 +8,27 @@
 
 #include "hanoi.h"
 
-int & Tower::top()
+int & Tower::top() noexcept
 {
     return arr.at(height - 1);
 }
 
-int & Tower::above_top()
+int & Tower::above_top() noexcept
 {
     return arr.at(height);
 }
 
-bool Tower::is_empty() const
+bool Tower::is_empty() const noexcept
 {
     return height == 0;
 }
 
-bool Tower::is_full(int num_disks) const
-{
-    return height == num_disks;
-}
-
-int Tower::operator[](int pos) const
+int Tower::operator[](int pos) const noexcept
 {
     return arr[pos];
 }
 
-Hanoi::Hanoi(int num_disks_1)
+Hanoi::Hanoi(int num_disks_1) noexcept(false)
 {
     if (num_disks_1 < 1)
     {
@@ -65,44 +60,45 @@ Hanoi::Hanoi(int num_disks_1)
     }
 }
 
-Tower & Hanoi::get_tower(pos tower_num)
+Tower & Hanoi::get_tower(pos tower_pos) noexcept(false)
 {
-    switch(tower_num)
+    switch(tower_pos)
     {
         case left:
+
             return left_tower;
-            break;
 
         case center:
+
             return center_tower;
-            break;
 
         case right:
+
             return right_tower;
-            break;
 
         default:
-            return left_tower;
+
+            throw std::invalid_argument("Invalid pos.");
     }
 }
 
-void Hanoi::move(pos tower_1_num, pos tower_2_num)
+void Hanoi::move(pos tower_1_pos, pos tower_2_pos) noexcept(false)
 {
-	if (tower_1_num == tower_2_num)
+	if (tower_1_pos == tower_2_pos)
 	{
 		num_moves++;
 		
 		display();
 	}
-	else if (tower_1_num < 1 || tower_1_num > 3 || tower_2_num < 1 || tower_2_num > 3)
+	else if (tower_1_pos < 1 || tower_1_pos > 3 || tower_2_pos < 1 || tower_2_pos > 3)
 	{
 		throw std::invalid_argument("Invalid selection.");
 	}
 	else
 	{
-		Tower & tower_1 = get_tower(tower_1_num);
+		Tower & tower_1 = get_tower(tower_1_pos);
 
-		Tower & tower_2 = get_tower(tower_2_num);
+		Tower & tower_2 = get_tower(tower_2_pos);
 		
 		try
 		{
@@ -110,12 +106,12 @@ void Hanoi::move(pos tower_1_num, pos tower_2_num)
 		}
 		catch (const std::invalid_argument& e)
 		{
-			throw;
+			throw e;
 		}
 	}
 }
 
-void Hanoi::move(Tower & tower_1, Tower & tower_2)
+void Hanoi::move(Tower & tower_1, Tower & tower_2) noexcept(false)
 {
     if (tower_1.is_empty())
     {
@@ -138,56 +134,100 @@ void Hanoi::move(Tower & tower_1, Tower & tower_2)
         num_moves++;
 
         display();
+
+        if (solution && !is_solved())
+        {
+            std::cout << "Press enter to continue.\n";
+
+            std::cin.ignore(1);
+        }
+        else
+        {
+            std::cout << "Press any key to exit.\n";
+
+            std::cin.ignore(1);
+        }
     }
 }
 
-Tower & Hanoi::get_intermediate(pos tower_1_num, pos tower_2_num)
+Tower & Hanoi::get_intermediate(pos tower_1_pos, pos tower_2_pos) noexcept(false)
 {
-    int intermediate_num = 6 - (int) tower_1_num - (int) tower_2_num; // calculates the int of the odd one out. 3 is sum of enum pos
+    int intermediate_pos = 6 - (int) tower_1_pos - (int) tower_2_pos; // calculates the int of the odd one out. 6 is sum of enum pos
 
-    return get_tower((pos) intermediate_num);
+    return get_tower((pos) intermediate_pos);
 }
 
-void Hanoi::move_stack(int num_disks, pos tower_1_num, pos tower_2_num)
+void Hanoi::move_stack(int num_disks_1, pos tower_1_pos, pos tower_2_pos) noexcept(false)
 {
-    Tower tower_1 = get_tower(tower_1_num);
+    Tower & tower_1 = get_tower(tower_1_pos);
 
-    Tower tower_2 = get_tower(tower_2_num);
+    Tower & tower_2 = get_tower(tower_2_pos);
 
-    if(num_disks == 1)
+    if(num_disks_1 == 1)
     {
-        move(tower_1, tower_2);
+        try
+		{
+			move(tower_1, tower_2);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			throw e;
+		}
     }
     else
     {
-        Tower intermediate = get_intermediate(tower_1_num, tower_2_num);
+        Tower & intermediate = get_intermediate(tower_1_pos, tower_2_pos);
 
-        move_stack(num_disks, tower_1, tower_2, intermediate);
+        try
+		{
+			move_stack(num_disks_1, tower_1, tower_2, intermediate);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			throw e;
+		}
     }
 }
 
-void Hanoi::move_stack(int num_disks, Tower & tower_1, Tower & tower_2, Tower & intermediate)
+void Hanoi::move_stack(int num_disks_1, Tower & tower_1, Tower & tower_2, Tower & intermediate) noexcept(false)
 {
-    if(num_disks == 1)
+    if(num_disks_1 == 1)
     {
-        move(tower_1, tower_2);
+        try
+		{
+			move(tower_1, tower_2);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			throw e;
+		}
     }
     else
     {
-        move_stack(num_disks-1, tower_1, intermediate, tower_2);
+        try
+		{
+            move_stack(num_disks_1-1, tower_1, intermediate, tower_2);
 
-        move(tower_1, tower_2);
+			move(tower_1, tower_2);
 
-        move_stack(num_disks-1, intermediate, tower_2, tower_1);
+            move_stack(num_disks_1-1, intermediate, tower_2, tower_1);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			throw e;
+		}
     }
 }
 
-void Hanoi::solve()
+void Hanoi::solve() noexcept
 {
-    move_stack(num_disks, left, right); // move all disks from the left tower to the right tower
+    solution = true;
+
+    // Move all disks from the left tower to the right tower.
+    move_stack(num_disks, left, right);
 }
 
-void Hanoi::print() const
+void Hanoi::print() const noexcept
 {
     std::cout << "after move " << num_moves << ":\n";
     std::cout << "left tower\n";
@@ -217,7 +257,7 @@ void Hanoi::print() const
     std::cout << right_tower[num_disks-1] << "\n\n";
 }
 
-void Hanoi::display() const
+void Hanoi::display() const noexcept
 {
     Hanoi_display display(num_disks);
 
@@ -233,7 +273,7 @@ void Hanoi::display() const
     display.print_game(*this);
 }
 
-bool Hanoi::is_solved() const
+bool Hanoi::is_solved() const noexcept
 {
     bool is_solved = true;
 
@@ -252,12 +292,12 @@ bool Hanoi::is_solved() const
     return is_solved;
 }
 
-int Hanoi::get_num_moves() const
+int Hanoi::get_num_moves() const noexcept
 {
     return num_moves;
 }
 
-Hanoi_display::Hanoi_display(int input_num_disks)
+Hanoi_display::Hanoi_display(int input_num_disks) noexcept
 {
     num_disks = input_num_disks;
 
@@ -290,7 +330,7 @@ Hanoi_display::Hanoi_display(int input_num_disks)
     right_tower_pos = center_tower_pos + 1 + space_between_towers + 1;
 }
 
-void Hanoi_display::print_game(const Hanoi & game)
+void Hanoi_display::print_game(const Hanoi & game) noexcept
 {
     initialize_display();
 
@@ -301,7 +341,7 @@ void Hanoi_display::print_game(const Hanoi & game)
     print_ascii_display();
 }
 
-void Hanoi_display::initialize_display()
+void Hanoi_display::initialize_display() noexcept
 {
     ascii_display.resize(display_height);
 
@@ -316,7 +356,7 @@ void Hanoi_display::initialize_display()
     }
 }
 
-void Hanoi_display::add_towers()
+void Hanoi_display::add_towers() noexcept
 {
     add_tower(left_tower_pos);
 
@@ -325,11 +365,12 @@ void Hanoi_display::add_towers()
     add_tower(right_tower_pos);
 }
 
-void Hanoi_display::add_tower(int tower_pos)
+void Hanoi_display::add_tower(int tower_pos) noexcept
 {
-    // Top
+    // Top.
     ascii_display[top_margin][tower_pos] = '_';
 
+    // Sides.
     for (int i = top_margin + 1; i < display_height; i++)
     {
         // Left side.
@@ -339,11 +380,11 @@ void Hanoi_display::add_tower(int tower_pos)
         ascii_display[i][tower_pos + 1] = '|';
     }
 
-    // Bottom
+    // Bottom.
     ascii_display[display_height-1][tower_pos] = '_';
 }
 
-void Hanoi_display::add_disks(const Hanoi & game)
+void Hanoi_display::add_disks(const Hanoi & game) noexcept
 {
     for (int i = 0; i < num_disks; i++)
     {
@@ -355,12 +396,13 @@ void Hanoi_display::add_disks(const Hanoi & game)
     }
 }
 
-void Hanoi_display::add_disk(int tower_pos, int disk_pos, int disk_size)
+void Hanoi_display::add_disk(int tower_pos, int disk_pos, int disk_size) noexcept
 {
     if (disk_size > 0)
     {
         int disk_pos_height = display_height - 1 - (3*disk_pos + 1);
 
+        // Disk of size 1 has width 5. Increasing size by 1 increases width by 2.
         int disk_width = 2*disk_size + 3;
 
         for (int i = 0; i < disk_width; i++)
@@ -378,7 +420,7 @@ void Hanoi_display::add_disk(int tower_pos, int disk_pos, int disk_size)
     }
 }
 
-void Hanoi_display::print_ascii_display() const
+void Hanoi_display::print_ascii_display() const noexcept
 {
     for (auto line: ascii_display)
     {
