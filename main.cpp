@@ -17,70 +17,87 @@ int main()
     std::cout << "For a greater challenge you can increase the number of disks.\n";
     std::cout << "Enter the number of disks you would like: ";
 
-    int num_disks = 3;
+    int num_disks;
 
     std::cin >> num_disks;
 
-    std::cin.ignore(1, '\n');
+    std::cin.ignore(1);
 
     std::cout << "\nPress enter to begin.";
 
-    std::cin.ignore(1, '\n');
+    std::cin.ignore(1);
 
     Hanoi game(num_disks);
 
     game.display();
 
-    int tower_1 = -1;
+    std::cout << "Would you like to see a step by step solution? Enter y or n: ";
 
-    int tower_2 = -1;
+    char choice;
 
-    while (tower_1 != 0 && tower_2 != 0 && !game.is_solved())
+    std::cin >> choice;
+
+    std::cin.ignore(1);
+
+    if (choice == 'n')
     {
-        std::cout << "Enter 1,2,3 to indicate which tower you choose or 0 to quit.\n";
+        int tower_1 = -1;
 
-        std::cout << "move from tower ";
+        int tower_2 = -1;
 
-        std::cin >> tower_1;
-
-        if (tower_1 == 0)
+        while (tower_1 != 0 && tower_2 != 0 && !game.is_solved())
         {
-            break;
+            std::cout << "Enter 1,2,3 to indicate which tower you choose or 0 to quit.\n";
+
+            std::cout << "move from tower ";
+
+            std::cin >> tower_1;
+
+            if (tower_1 == 0)
+            {
+                break;
+            }
+
+            std::cin.ignore(1);
+
+            std::cout << "to ";
+
+            std::cin >> tower_2;
+
+            std::cout <<"\n";
+
+            try
+            {
+                game.move((pos) tower_1, (pos) tower_2);
+            }
+            catch(const std::invalid_argument& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
         }
 
-        std::cout << "to ";
-
-        std::cin >> tower_2;
-
-        std::cout <<"\n";
-
-        try
+        if (game.is_solved())
         {
-            game.move((pos) tower_1, (pos) tower_2);
-        }
-        catch(const std::invalid_argument& e)
-        {
-            std::cerr << e.what() << '\n';
+            std::cout << "\nSolved!\n\n";
+
+            std::cout << "You solved this puzzle in " << game.get_num_moves() << " moves.\n";
+            std::cout <<  "The minimum number of moves required is " << ((1<<num_disks) - 1) << ".\n";
+
+            if (game.get_num_moves() == ((1<<num_disks) - 1))
+            {
+                std::cout << "You solved it perfectly.\n";
+            }
+
+
+            std::cin.ignore(1);
+
+            std::cout << "\nPress enter to exit.";
+
+            std::cin.ignore(1);
         }
     }
-
-    if (game.is_solved())
+    else
     {
-        std::cout << "\nSolved!\n\n";
-
-        std::cout << "You solved this puzzle in " << game.get_num_moves() << " moves.\n";
-        std::cout <<  "The minimum number of moves required is " << ((1<<num_disks) - 1) << ".\n";
-
-        if (game.get_num_moves() == ((1<<num_disks) - 1))
-        {
-            std::cout << "You solved it perfectly.\n";
-        }
-
-
-        std::cin.ignore(1, '\n');
-
-        std::cout << "\nPress enter to exit.";
-
-        std::cin.ignore(1, '\n');
+        game.solve();
     }
 }
