@@ -88,7 +88,6 @@ int main()
                 std::cout << "You solved it perfectly.\n";
             }
 
-
             std::cin.ignore(1);
 
             std::cout << "\nPress enter to exit.";
