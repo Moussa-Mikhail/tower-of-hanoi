@@ -4,15 +4,14 @@
 #include <vector>
 #include <string>
 
-// Header file of class representing tower of hanoi game
-// with methods to solve it perfectly
+// Header file of class representing Tower of Hanoi game
 
 // Position of tower to be used by player.
 enum pos {left = 1, center, right}; 
 
 struct Tower
 {
-    // Array of ints which represent the size of disks on the tower.
+    // Vector of ints which represent the size of disks on the tower.
     std::vector<int> arr;
 
     int height;
@@ -26,6 +25,7 @@ struct Tower
     // Returns true if tower is empty.
     bool is_empty() const noexcept;
 
+    // Used for const access for printing and displaying.
     int operator[](int pos) const noexcept;
 };
 
@@ -35,13 +35,16 @@ class Hanoi
 
         Hanoi(int num_disks = 3) noexcept(false);
         
-        // move the top disk on stack 1 to the top of stack 2
+        // move the top disk on tower 1 to the top of tower 2
         void move(pos tower_1_num, pos tower_2_num) noexcept(false); 
 
         void solve() noexcept;
 
         // Simply prints the state of the game.
-        void print() const noexcept; 
+        void print() const noexcept;
+        
+        // Prints tower. Used in print() to avoid duplicate code.
+        void print_tower(Tower tower) const noexcept; 
 
         // Prints ascii representation of game.
         void display() const noexcept;
@@ -57,7 +60,8 @@ class Hanoi
         // Keeps track of how many moves have been made.
         int num_moves = 0;
 
-        // Used to change behavior of move function in case of step by step solution.
+        // Used to change behavior of move() function in case of step by step solution.
+        // Makes it so that move() function will wait for user input after each call to display()
         bool solution = false; 
 
         Tower left_tower;
@@ -89,7 +93,7 @@ class Hanoi_display
 
         Hanoi_display(int num_disks) noexcept;
 
-        void print_game(const Hanoi & game) noexcept;
+        void display_game(const Hanoi & game) noexcept;
 
     private:
 

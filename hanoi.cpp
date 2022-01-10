@@ -100,14 +100,7 @@ void Hanoi::move(pos tower_1_pos, pos tower_2_pos) noexcept(false)
 
 		Tower & tower_2 = get_tower(tower_2_pos);
 		
-		try
-		{
-			move(tower_1, tower_2);
-		}
-		catch (const std::invalid_argument& e)
-		{
-			throw e;
-		}
+		move(tower_1, tower_2);
 	}
 }
 
@@ -141,7 +134,7 @@ void Hanoi::move(Tower & tower_1, Tower & tower_2) noexcept(false)
 
             std::cin.ignore(1);
         }
-        else
+        else if (solution && is_solved())
         {
             std::cout << "Press any key to exit.\n";
 
@@ -165,27 +158,13 @@ void Hanoi::move_stack(int num_disks_1, pos tower_1_pos, pos tower_2_pos) noexce
 
     if(num_disks_1 == 1)
     {
-        try
-		{
-			move(tower_1, tower_2);
-		}
-		catch (const std::invalid_argument& e)
-		{
-			throw e;
-		}
+        move(tower_1, tower_2);
     }
     else
     {
         Tower & intermediate = get_intermediate(tower_1_pos, tower_2_pos);
 
-        try
-		{
-			move_stack(num_disks_1, tower_1, tower_2, intermediate);
-		}
-		catch (const std::invalid_argument& e)
-		{
-			throw e;
-		}
+        move_stack(num_disks_1, tower_1, tower_2, intermediate);
     }
 }
 
@@ -193,29 +172,15 @@ void Hanoi::move_stack(int num_disks_1, Tower & tower_1, Tower & tower_2, Tower 
 {
     if(num_disks_1 == 1)
     {
-        try
-		{
-			move(tower_1, tower_2);
-		}
-		catch (const std::invalid_argument& e)
-		{
-			throw e;
-		}
+        move(tower_1, tower_2);
     }
     else
     {
-        try
-		{
-            move_stack(num_disks_1-1, tower_1, intermediate, tower_2);
+        move_stack(num_disks_1-1, tower_1, intermediate, tower_2);
 
-			move(tower_1, tower_2);
+        move(tower_1, tower_2);
 
-            move_stack(num_disks_1-1, intermediate, tower_2, tower_1);
-		}
-		catch (const std::invalid_argument& e)
-		{
-			throw e;
-		}
+        move_stack(num_disks_1-1, intermediate, tower_2, tower_1);
     }
 }
 
@@ -230,31 +195,30 @@ void Hanoi::solve() noexcept
 void Hanoi::print() const noexcept
 {
     std::cout << "after move " << num_moves << ":\n";
+
     std::cout << "left tower\n";
 
-    for (int i = 0; i < num_disks-1; i++)
-    {
-        std::cout << left_tower[i] << ", ";
-    }
-    std::cout << left_tower[num_disks-1] << "\n";
+    print_tower(left_tower);
 
 
     std::cout << "\ncenter tower\n";
 
-    for (int i = 0; i < num_disks-1; i++)
-    {
-        std::cout << center_tower[i] << ", ";
-    }
-    std::cout << center_tower[num_disks-1] << "\n";
+    print_tower(center_tower);
 
     
     std::cout << "\nright tower\n";
 
+    print_tower(right_tower);
+}
+
+void Hanoi::print_tower(Tower tower) const noexcept
+{
     for (int i = 0; i < num_disks-1; i++)
     {
-        std::cout << right_tower[i] << ", ";
+        std::cout << left_tower[i] << ", ";
     }
-    std::cout << right_tower[num_disks-1] << "\n\n";
+
+    std::cout << left_tower[num_disks-1] << "\n";
 }
 
 void Hanoi::display() const noexcept
@@ -270,7 +234,7 @@ void Hanoi::display() const noexcept
         std::cout << "after move " << num_moves << ":\n";
     }
 
-    display.print_game(*this);
+    display.display_game(*this);
 }
 
 bool Hanoi::is_solved() const noexcept
@@ -308,7 +272,7 @@ Hanoi_display::Hanoi_display(int input_num_disks) noexcept
     // Tower must fit num_disks and 1 char for top and 1 char margin.
     int tower_height = num_disks*disk_height + 1 + 1;
 
-    top_margin = 1;
+    top_margin = 0;
 
     display_height = top_margin + tower_height;
 
@@ -330,7 +294,7 @@ Hanoi_display::Hanoi_display(int input_num_disks) noexcept
     right_tower_pos = center_tower_pos + 1 + space_between_towers + 1;
 }
 
-void Hanoi_display::print_game(const Hanoi & game) noexcept
+void Hanoi_display::display_game(const Hanoi & game) noexcept
 {
     initialize_display();
 
@@ -400,6 +364,7 @@ void Hanoi_display::add_disk(int tower_pos, int disk_pos, int disk_size) noexcep
 {
     if (disk_size > 0)
     {
+        // 
         int disk_pos_height = display_height - 1 - (3*disk_pos + 1);
 
         // Disk of size 1 has width 5. Increasing size by 1 increases width by 2.
