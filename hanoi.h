@@ -49,7 +49,7 @@ class Hanoi
         // Prints ascii representation of game.
         void display() const noexcept;
 		
-		bool is_solved() const noexcept;
+	bool is_solved() const noexcept;
 
         int get_num_moves() const noexcept;
     
