@@ -54,8 +54,8 @@ class Hanoi
         int get_num_moves() const noexcept;
     
     private:
-        // Number of disks.
-        int num_disks; // number of disks
+	
+        int num_disks;
 
         // Keeps track of how many moves have been made.
         int num_moves = 0;
