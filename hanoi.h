@@ -91,7 +91,7 @@ class Hanoi_display
 {
     public:
 
-        Hanoi_display(int num_disks) noexcept;
+        explicit Hanoi_display(int num_disks) noexcept;
 
         void display_game(const Hanoi & game) noexcept;
 
